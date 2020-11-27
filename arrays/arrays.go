@@ -1,8 +1,8 @@
-//package arrays
-package main
+package arrays
+
+//package main
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -48,9 +48,8 @@ func SumAllTails(numbersToSum ...[]int) []int {
 
 func LastX(lx int) ([]int, []string) {
 	s := [10]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	ss := [10]string{"00", "11", "22"," 33", "44", "55", "66", "77", "88", "99"}
-	return s[len(s) - lx:], ss[len(ss) - lx:]
-
+	ss := [10]string{"00", "11", "22", " 33", "44", "55", "66", "77", "88", "99"}
+	return s[len(s)-lx:], ss[len(ss)-lx:]
 
 }
 
@@ -58,15 +57,14 @@ func LastX1(lx string) bool {
 	ss := "BRAIN-Omega_dev"
 	return strings.HasSuffix(ss, "_dev")
 
-
 }
 
 //Zum ausprobieren. Package dann auch "Main" nennen
-func main() {
-	got := SumAll([]int{1, 2}, []int{0, 9})
-	fmt.Println(got)
-	g2, g3 := LastX(4)
-	fmt.Println(g2, g3)
-	g4 := LastX1("BRAIN-Omega_dev")
-	fmt.Println(g4)
-}
+//func main() {
+//	got := SumAll([]int{1, 2}, []int{0, 9})
+//	fmt.Println(got)
+//	g2, g3 := LastX(4)
+//	fmt.Println(g2, g3)
+//	g4 := LastX1("BRAIN-Omega_dev")
+//	fmt.Println(g4)
+//}

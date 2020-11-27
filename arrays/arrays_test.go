@@ -57,10 +57,5 @@ func TestSumAllTails(t *testing.T) {
 		want := []int{0, 14}
 		assertCorrectMessage(t, got, want)
 	})
-	t.Run("Last x from Array", func(t *testing.T) {
-		got := LastX(4)
-		want := []int{6, 7, 8 ,9}
-		assertCorrectMessage(t, got, want)
-	})
-}
 
+}
