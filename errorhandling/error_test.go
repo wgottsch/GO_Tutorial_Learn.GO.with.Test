@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestHello(t *testing.T) {
+func TestErr(t *testing.T) {
 
 	//assertCorrectMessage := func(t *testing.T, got, want string) {
 	//	t.Helper()
@@ -17,15 +17,13 @@ func TestHello(t *testing.T) {
 
 	t.Run("Fehler Messages", func(t *testing.T) {
 		err := ShowErrors()
-		//fmt.Println(errors.Cause(err))
 		if errors.Cause(err) == ErrNoOne {
 			fmt.Printf("GCP down:-) , %v\n", err)
 			fmt.Printf("%+v\n", err) // %v as format parameter, change the format parameter to %+v ，to get the complete call stack.
 			return
 		}
 		if err != nil {
-			// unknown error
+			fmt.Print(err)
 		}
 	})
-
 }

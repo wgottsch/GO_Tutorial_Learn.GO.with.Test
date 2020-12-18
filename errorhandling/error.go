@@ -6,15 +6,15 @@ import (
 
 func ShowErrors() error {
 	err := d3()
-
 	return err
-
 }
 
 // "Wrap" is used to wrap the underlying error, add contextual text information, and attach the call stack.
 // Generally it is used to wrap calls to API from other people (standard library or third-party library).
 func d1() error {
-	return errors.Wrap(ErrNoOne, "GCP service not reachable")
+	//return errors.Wrap(ErrNoOne, "GCP service not reachable")
+	//return errors.Wrap(nil, "")
+	return nil
 	//return errors.WithStack(ErrNoOne)
 }
 
