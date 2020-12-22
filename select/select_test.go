@@ -1,0 +1,37 @@
+package _select
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+)
+
+func TestSelect(t *testing.T) {
+
+	assertCorrectMessage := func(t *testing.T, got, want string) {
+		t.Helper()
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	}
+
+	t.Run("Website Race", func(t *testing.T) {
+
+		slowServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			time.Sleep((20 * time.Millisecond))
+			w.WriteHeader(http.StatusOK)
+		}))
+		fastServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		}))
+
+		slowURL := slowServer.URL
+		fastURL := fastServer.URL
+
+		want := fastURL
+		got := Racer(slowURL, fastURL)
+
+		assertCorrectMessage(t, got, want)
+	})
+}

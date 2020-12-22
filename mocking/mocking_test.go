@@ -2,8 +2,10 @@ package mocking
 
 import (
 	"bytes"
+	"os"
 	"reflect"
 	"testing"
+	"time"
 )
 
 type Spysleeper struct {
@@ -29,6 +31,23 @@ func (s *CountdownOperationsSpy) Write(p []byte) (n int, err error) {
 
 const sleep = "sleep"
 const write = "write"
+
+type ConfigurableSleeper struct {
+	duration time.Duration
+	sleep    func(time.Duration)
+}
+
+func (c *ConfigurableSleeper) Sleep() {
+	c.sleep(c.duration)
+}
+
+type SpyTime struct {
+	durationSlept time.Duration
+}
+
+func (s *SpyTime) Sleep(duration time.Duration) {
+	s.durationSlept = duration
+}
 
 func TestMock(t *testing.T) {
 
@@ -66,6 +85,12 @@ Go!`
 		assertCorrectMessage(t, got, want)
 	})
 
+	t.Run("Real Countdown with config", func(t *testing.T) {
+
+		sleeper := &ConfigurableSleeper{1 * time.Second, time.Sleep}
+		Countdown(os.Stdout, sleeper)
+	})
+
 	t.Run("Sleep4Printing Countdown", func(t *testing.T) {
 		spySleepPrinter := &CountdownOperationsSpy{}
 		Countdown(spySleepPrinter, spySleepPrinter)
@@ -84,6 +109,19 @@ Go!`
 		if !reflect.DeepEqual(want, spySleepPrinter.Calls) {
 			t.Errorf("wanted calls %v got %v", want, spySleepPrinter.Calls)
 		}
+	})
+
+	t.Run("Config Countdown", func(t *testing.T) {
+		sleepTime := 5 * time.Second
+
+		spyTime := &SpyTime{}
+		sleeper := ConfigurableSleeper{sleepTime, spyTime.Sleep}
+		sleeper.Sleep()
+
+		if spyTime.durationSlept != sleepTime {
+			t.Errorf("should have slept for %v but slept for %v", sleepTime, spyTime.durationSlept)
+		}
+
 	})
 
 }
