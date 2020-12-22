@@ -14,8 +14,8 @@ func ShowErrors() error {
 func d1() error {
 	//return errors.Wrap(ErrNoOne, "GCP service not reachable")
 	//return errors.Wrap(nil, "")
-	return nil
-	//return errors.WithStack(ErrNoOne)
+	//return nil
+	return errors.WithStack(ErrNoOne)
 }
 
 // "WithMessage" is used to add contextual text information to underlying error without attaching call stack.
