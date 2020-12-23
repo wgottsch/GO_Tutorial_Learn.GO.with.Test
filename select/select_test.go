@@ -17,14 +17,11 @@ func TestSelect(t *testing.T) {
 	}
 
 	t.Run("Website Race", func(t *testing.T) {
+		slowServer := makeDelayedServer(20 * time.Millisecond)
+		fastServer := makeDelayedServer(0 * time.Millisecond)
 
-		slowServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			time.Sleep((20 * time.Millisecond))
-			w.WriteHeader(http.StatusOK)
-		}))
-		fastServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-		}))
+		defer slowServer.Close()
+		defer fastServer.Close()
 
 		slowURL := slowServer.URL
 		fastURL := fastServer.URL
@@ -34,4 +31,11 @@ func TestSelect(t *testing.T) {
 
 		assertCorrectMessage(t, got, want)
 	})
+}
+
+func makeDelayedServer(delay time.Duration) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(delay)
+		w.WriteHeader(http.StatusOK)
+	}))
 }
