@@ -1,24 +1,26 @@
 package _select
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 )
 
-func Racer(a, b string) (winner string) {
+var tenSecondTimeout = 10 * time.Second
+
+func Racer(a, b string) (winner string, err error) {
+	return ConfigurableRacer(a, b, tenSecondTimeout)
+}
+
+func ConfigurableRacer(a, b string, timeout time.Duration) (winner string, err error) {
 	select {
 	case <-ping(a):
-		return a
+		return a, nil
 	case <-ping(b):
-		return b
+		return b, nil
+	case <-time.After(10 * time.Millisecond):
+		return "", fmt.Errorf("timed out waiting for %s and %s", a, b)
 	}
-	//aDuration := measureResponsetime(a)
-	//bDuration := measureResponsetime(b)
-	//
-	//if aDuration < bDuration {
-	//	return a
-	//}
-	//
-	//return b
 }
 
 func ping(url string) chan struct{} {
@@ -29,10 +31,3 @@ func ping(url string) chan struct{} {
 	}()
 	return ch
 }
-
-//
-//func measureResponsetime(url string) time.Duration {
-//	start := time.Now()
-//	http.Get(url)
-//	return time.Since(start)
-//}

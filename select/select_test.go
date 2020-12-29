@@ -27,9 +27,25 @@ func TestSelect(t *testing.T) {
 		fastURL := fastServer.URL
 
 		want := fastURL
-		got := Racer(slowURL, fastURL)
+		got, err := Racer(slowURL, fastURL)
+
+		if err != nil {
+			t.Fatalf("did not expect an error. get: %v", err)
+		}
 
 		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("Website Race: Error if Response > 10 seconds", func(t *testing.T) {
+		server := makeDelayedServer(11 * time.Millisecond)
+
+		defer server.Close()
+
+		_, err := ConfigurableRacer(server.URL, server.URL, (20 * time.Millisecond))
+		if err == nil {
+			t.Error("expected an error ")
+		}
+
 	})
 }
 
